@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedLastTapDate = localStorage.getItem(`lastTapDate_${user.id}`);
         const today = new Date().toDateString();
 
+        console.log(`Stored balance: ${storedBalance}, stored ETB today: ${storedETBToday}, stored last tap date: ${storedLastTapDate}, today: ${today}`);
+
         if (storedBalance !== null) {
             balance = parseFloat(storedBalance);
         }
@@ -44,12 +46,7 @@ document.getElementById('main-img').addEventListener('click', () => {
         etbToday += incrementValue;
 
         updateDisplay();
-
-        const user = window.Telegram.WebApp.initDataUnsafe.user;
-        if (user) {
-            localStorage.setItem(`balance_${user.id}`, balance.toFixed(4));
-            localStorage.setItem(`etbToday_${user.id}`, etbToday.toFixed(4));
-        }
+        saveUserData();
     } else {
         showPopup("You have reached the maximum ETB earning for today.");
     }
@@ -80,5 +77,12 @@ function showPopup(message) {
 function updateDisplay() {
     document.getElementById('balance-value').innerText = balance.toFixed(4);
     document.getElementById('taps-remaining-value').innerText = Math.floor((maxETBPerDay - etbToday) / incrementValue);
-    document.getElementById('etb-remaining-value').innerText = (maxETBPerDay - etbToday).toFixed(4);
+}
+
+function saveUserData() {
+    const user = window.Telegram.WebApp.initDataUnsafe.user;
+    if (user) {
+        localStorage.setItem(`balance_${user.id}`, balance.toFixed(4));
+        localStorage.setItem(`etbToday_${user.id}`, etbToday.toFixed(4));
+    }
 }
